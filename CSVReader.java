@@ -23,8 +23,8 @@ public class CSVReader {
         size = headers.length;
         popLines();
         //debug printing
-        for(String s : headers){System.out.println(s);}
-        System.out.println(size);
+        //for(String s : headers){System.out.println(s);}
+        //System.out.println(size);
 
     }
 
@@ -34,16 +34,18 @@ public class CSVReader {
      * @return String[] of tokens which fall under the header.
      */
     public String[] getTokens(String header){
-        
+
         //input validation, checks to make sure the argument is contained in headers array
         boolean contains = false;
         int headerIndex = 0;
         for(String s : headers){
-            headerIndex++;
+            //TODO debug printing
+            //System.out.println(s);
             if(s.equals(header)){
                 contains = true;
                 break;
             }
+            headerIndex++;
         }
         if(!contains){throw new NoSuchElementException("Token not contained in headers.");}
         //
@@ -67,6 +69,8 @@ public class CSVReader {
      * @param header header tag to use
      */
     public String[] getTokens(String[][] lines, String header){
+
+        //NOTE: local variable lines is different from global ArrayList<String[]>
 
         //input validation, checks to make sure the argument is contained in headers array
         boolean contains = false;
@@ -117,7 +121,7 @@ public class CSVReader {
     public String[][] getLines(int start, int end){
 
         //input validation. end should be equal or greater than start, and both should be within the size bounds of the arraylist.
-        if((start < 0 || end > size) || end <= start){
+        if((start < 0 || end > numLines) || end <= start){
             throw new IllegalArgumentException("Invalid parameters, check your range. End < start, or range is outside of Arraylist size bounds. ArrayList size: " + size);
         }
 
@@ -134,10 +138,56 @@ public class CSVReader {
 
     }
 
+    //TODO test
+
+    /**
+     * Converts a String[] of tokens to a double[].
+     * @param tokens tokens acquired from getTokens()
+     * @return converted token array
+     */
+    public double[] tokensToDouble(String[] tokens){
+
+        int arrLen = tokens.length;
+        double[] out = new double[arrLen];
+
+        for(int i = 0; i<arrLen; i++){
+
+            out[i] = Double.parseDouble(tokens[i]);
+
+        }
+
+        return out;
+
+    }
+
+    //TODO test
+
+    /**
+     * Converts a String[] of tokens to an int[].
+     * @param tokens tokens acquired from getTokens()
+     * @return converted token array
+     */
+    public int[] tokensToInt(String[] tokens){
+
+        int arrLen = tokens.length;
+        int[] out = new int[arrLen];
+
+        for(int i = 0; i<arrLen; i++){
+
+            out[i] = Integer.parseInt(tokens[i]);
+
+        }
+
+        return out;
+
+    }
+
 
     public int getSize(){return size;}
 
     public int getNumLines(){return this.numLines;}
+
+    public String[] getHeaders(){return this.headers;}
 
     public ArrayList<String[]> getList(){return this.lines;}
 
@@ -156,7 +206,7 @@ public class CSVReader {
         //Scanner input = new Scanner(file);
         input.useDelimiter("\n");
         Scanner line = new Scanner(input.next());
-        line.useDelimiter(";");
+        line.useDelimiter(";|[;;]]");
         int numHeaders = 0;
 
         ArrayList<String> headers = new ArrayList<String>();
@@ -169,6 +219,11 @@ public class CSVReader {
 
         String[] out = new String[numHeaders];
         headers.toArray(out);
+
+        //debug printing
+        //for(String s : headers){
+        //System.out.println(s);
+        //}
 
 
         return out;
@@ -183,7 +238,7 @@ public class CSVReader {
         while(input.hasNext()){
 
             Scanner line = new Scanner(input.next());
-            line.useDelimiter(";");
+            line.useDelimiter(";|[;;]");
             String[] arr = new String[size];
 
             //TODO find a non O(n^2) solution for populating tokens?
